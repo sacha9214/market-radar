@@ -130,6 +130,18 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .news h3 { margin: 0; font-size: 16px; font-weight: 600; line-height: 1.35; }
 .news h3 a:hover { color: var(--accent); }
 .news .sum { margin: 6px 0 0; color: var(--muted); font-size: 13.5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.outlook { margin-top: 10px; padding: 9px 11px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 8px; font-size: 13px; }
+.ol-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.ol-label { color: var(--muted); margin-right: 2px; }
+.dir { font: 600 12px var(--mono); padding: 2px 7px; border-radius: 5px; white-space: nowrap; }
+.dir.up { color: var(--live); background: rgba(43, 213, 118, 0.12); }
+.dir.down { color: var(--high); background: var(--high-bg); }
+.top-list .dir { font-size: 10.5px; padding: 1px 5px; }
+.ol-why { color: var(--muted); margin-top: 6px; line-height: 1.4; }
+.ol-why b { color: var(--text); font-weight: 600; }
+.ol-row + .ol-moved, .ol-why + .ol-moved { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line); }
+.ol-moved { color: var(--muted); }
+.ol-moved b { color: var(--med); font-weight: 600; }
 .tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
 .tag { font: 600 11px var(--mono); padding: 2px 6px; border-radius: 4px; background: var(--panel-2); color: var(--text); border: 1px solid var(--line); }
 .tag.cat { font-family: inherit; font-weight: 500; color: var(--muted); }

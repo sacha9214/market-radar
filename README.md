@@ -8,6 +8,7 @@ Live feed of the news that moves crypto and stock markets, ranked by likely impa
 
 - `scripts/fetch_news.py` (standard library only) pulls ~19 public RSS feeds — CoinDesk, Cointelegraph, The Block, Decrypt, CNBC, MarketWatch, Investing.com, Seeking Alpha, BBC, plus official sources (Federal Reserve, SEC, ECB, White House).
 - Each headline gets a keyword-based impact score (rate decisions, inflation data, regulation, tariffs, hacks, big % moves…). The same story reported by several outlets is grouped, and each extra outlet raises the score.
+- `scripts/outlook.py` adds a likely-impact estimate per headline: which markets (crypto, stocks, gold, oil, dollar, or a named ticker) it usually pushes up or down, with the reasoning shown on the site. About 30 named rules (rate decisions, inflation, tariffs, conflicts, hacks, ETF flows, earnings…); when rules disagree, no arrow is shown. Headlines that only report a price move that already happened are flagged "already moved". Checked by `scripts/test_outlook.py` on every run.
 - The economic calendar comes from the Forex Factory weekly feed (US high/medium impact events, other countries high only).
 - A GitHub Action runs every ~10 minutes, rebuilds `site/data/*.json` and deploys to GitHub Pages. No commits, no server.
 - The page polls for new data every minute and can send a browser notification when a new high-impact story appears (while the tab is open).
@@ -15,7 +16,7 @@ Live feed of the news that moves crypto and stock markets, ranked by likely impa
 ## Limits
 
 - News arrives 10–30 minutes after publication (RSS lag + GitHub's scheduled-run delays). Professional desks get it in milliseconds. This is for not being caught off guard, not for beating the market.
-- The impact score is a keyword heuristic and will misjudge some headlines.
+- The impact score and the up/down arrows are keyword heuristics and will misjudge some headlines. Expected news is often already priced in, and markets sometimes do the opposite.
 - GitHub disables scheduled workflows after 60 days without repository activity; re-enable it in the Actions tab if updates stop.
 - Not investment advice.
 

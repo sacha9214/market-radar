@@ -33,6 +33,46 @@ const I18N = {
     disclaimer:
       "Les news arrivent avec 10 à 30 min de retard (flux RSS publics, actualisés par GitHub Actions). Les pros les ont en millisecondes : ce site sert à ne pas être pris par surprise, pas à battre le marché. Le score d'impact est calculé par mots-clés et peut se tromper. Rien ici n'est un conseil en investissement.",
     feeds: (ok, n) => `${ok}/${n} sources en ligne`,
+    outlookLabel: "Impact probable :",
+    why: "Pourquoi :",
+    movedTag: "⚠ Déjà réagi",
+    movedText: "Ce titre décrit un mouvement de prix qui a déjà eu lieu : acheter maintenant, c'est acheter après les autres.",
+    targets: { crypto: "Crypto", stocks: "Actions", gold: "Or", oil: "Pétrole", usd: "Dollar" },
+    reasons: {
+      dovish: "Baisse des taux ou espoir de baisse : l'argent devient moins cher, ça pousse en général actions et crypto vers le haut et affaiblit le dollar.",
+      hawkish: "Taux plus hauts ou baisses repoussées : l'argent coûte plus cher, les actifs risqués (tech, crypto) baissent souvent et le dollar monte.",
+      inflation_hot: "Inflation plus forte que prévu : la Fed risque de garder des taux hauts, mauvais pour actions et crypto, bon pour le dollar.",
+      inflation_cool: "Inflation qui ralentit : la Fed peut baisser ses taux plus tôt, plutôt positif pour actions et crypto.",
+      jobs_weak: "Emploi qui faiblit : peur de ralentissement, l'or sert de refuge, mais la Fed pourrait baisser ses taux.",
+      jobs_strong: "Emploi solide : la Fed a moins de raisons de baisser ses taux, le dollar se renforce.",
+      recession: "Risque de récession : les investisseurs vendent le risque et se réfugient dans l'or.",
+      deescalation: "Désescalade : moins de peur, le risque revient (actions, crypto), pétrole et or redescendent.",
+      conflict: "Conflit ou escalade : fuite vers les valeurs refuges (or, dollar), le pétrole monte, actions et crypto baissent souvent.",
+      tariff_relief: "Pause ou baisse des droits de douane : soulagement pour les entreprises, les marchés montent en général.",
+      tariff_up: "Nouveaux droits de douane ou restrictions : coûts plus hauts pour les entreprises, les marchés baissent souvent.",
+      oil_supply: "Menace sur l'offre de pétrole : le prix du baril monte, ce qui pèse sur l'économie.",
+      oil_glut: "Plus de pétrole sur le marché : le prix du baril baisse.",
+      shutdown: "Blocage budgétaire aux États-Unis : incertitude, l'or profite.",
+      hack: "Hack ou vol : perte de confiance, et les fonds volés peuvent être revendus sur le marché.",
+      depeg: "Faillite, perte d'ancrage ou retraits bloqués : peur de contagion dans la crypto.",
+      etf_positive: "ETF approuvé ou entrées d'argent : nouveaux acheteurs pour l'actif.",
+      etf_negative: "ETF refusé ou sorties d'argent : moins d'acheteurs, pression vendeuse.",
+      btc_buyer: "Un gros acheteur (entreprise, État) achète : demande en plus pour l'actif.",
+      seller: "Un gros détenteur vend ou envoie ses coins vers une plateforme : risque de pression vendeuse.",
+      reg_positive: "Décision de régulation favorable : moins de risque juridique, plutôt positif.",
+      reg_negative: "Poursuite, interdiction ou enquête : risque juridique, plutôt négatif.",
+      earnings_beat: "Résultats meilleurs que prévu : l'action monte souvent.",
+      earnings_miss: "Résultats décevants : l'action baisse souvent.",
+      upgrade: "Un analyste relève sa note ou son objectif de prix.",
+      downgrade: "Un analyste baisse sa note ou son objectif de prix.",
+      buyback: "Rachat d'actions ou division : l'entreprise soutient son cours.",
+      ceo_exit: "Départ du dirigeant : incertitude pour l'entreprise.",
+      ceo_return: "Retour d'un dirigeant apprécié du marché.",
+      antitrust: "Enquête, amende ou rappel : risque pour l'entreprise.",
+      deal: "Rachat ou fusion en vue : l'action concernée monte souvent.",
+    },
+    disclaimer2:
+      "Les flèches ▲▼ sont une estimation automatique de la réaction habituelle du marché, pas une prédiction. Si la news était attendue, elle est souvent déjà dans le prix, et le marché fait parfois l'inverse (« achète la rumeur, vends la nouvelle »).",
   },
   en: {
     calTitle: "Economic calendar — this week",
@@ -63,6 +103,46 @@ const I18N = {
     disclaimer:
       "News arrives 10–30 min late (public RSS feeds, refreshed by GitHub Actions). Pros get it in milliseconds: this site keeps you from being caught off guard, it won't beat the market. The impact score is keyword-based and can be wrong. Nothing here is investment advice.",
     feeds: (ok, n) => `${ok}/${n} sources online`,
+    outlookLabel: "Likely impact:",
+    why: "Why:",
+    movedTag: "⚠ Already moved",
+    movedText: "This headline reports a price move that already happened: buying now means buying after everyone else.",
+    targets: { crypto: "Crypto", stocks: "Stocks", gold: "Gold", oil: "Oil", usd: "Dollar" },
+    reasons: {
+      dovish: "Rate cuts or hopes of cuts: cheaper money usually lifts stocks and crypto and weakens the dollar.",
+      hawkish: "Higher rates or delayed cuts: money costs more, risk assets (tech, crypto) often fall and the dollar rises.",
+      inflation_hot: "Hotter inflation: the Fed may keep rates high, bad for stocks and crypto, good for the dollar.",
+      inflation_cool: "Cooling inflation: the Fed can cut sooner, usually positive for stocks and crypto.",
+      jobs_weak: "Weak jobs: slowdown fears, gold acts as a haven, but the Fed may cut rates.",
+      jobs_strong: "Strong jobs: less reason for the Fed to cut, the dollar firms up.",
+      recession: "Recession risk: investors dump risk and move into gold.",
+      deescalation: "De-escalation: less fear, risk comes back (stocks, crypto), oil and gold ease.",
+      conflict: "Conflict or escalation: flight to havens (gold, dollar), oil rises, stocks and crypto often fall.",
+      tariff_relief: "Tariff pause or cut: relief for companies, markets usually rise.",
+      tariff_up: "New tariffs or restrictions: higher costs for companies, markets often fall.",
+      oil_supply: "Threat to oil supply: crude rises, which weighs on the economy.",
+      oil_glut: "More oil on the market: crude falls.",
+      shutdown: "US budget standoff: uncertainty, gold benefits.",
+      hack: "Hack or theft: confidence takes a hit and stolen funds may be sold on the market.",
+      depeg: "Bankruptcy, lost peg or frozen withdrawals: contagion fears in crypto.",
+      etf_positive: "ETF approval or inflows: new buyers for the asset.",
+      etf_negative: "ETF rejection or outflows: fewer buyers, selling pressure.",
+      btc_buyer: "A large buyer (company, government) is buying: extra demand.",
+      seller: "A large holder is selling or moving coins to an exchange: possible selling pressure.",
+      reg_positive: "Favourable regulatory decision: less legal risk, usually positive.",
+      reg_negative: "Lawsuit, ban or probe: legal risk, usually negative.",
+      earnings_beat: "Better-than-expected results: the stock often rises.",
+      earnings_miss: "Disappointing results: the stock often falls.",
+      upgrade: "An analyst raised the rating or price target.",
+      downgrade: "An analyst cut the rating or price target.",
+      buyback: "Buyback or split: the company is supporting its stock.",
+      ceo_exit: "Leader departs: uncertainty for the company.",
+      ceo_return: "A leader the market likes is back.",
+      antitrust: "Probe, fine or recall: risk for the company.",
+      deal: "Takeover or merger in sight: the target stock often rises.",
+    },
+    disclaimer2:
+      "The ▲▼ arrows are an automatic estimate of how markets usually react, not a prediction. If the news was expected it is often already priced in, and markets sometimes do the opposite (\"buy the rumor, sell the news\").",
   },
 };
 
@@ -221,6 +301,25 @@ function renderNews() {
   banner.textContent = t("newBanner")(newCount);
 }
 
+function arrowChips(o) {
+  return (o?.effects || [])
+    .map((e) => `<span class="dir ${e.d > 0 ? "up" : "down"}">${esc(t("targets")[e.t] || e.t)} ${e.d > 0 ? "▲" : "▼"}</span>`)
+    .join("");
+}
+
+function outlookBlock(i) {
+  const o = i.outlook;
+  if (!o) return "";
+  const parts = [];
+  if (o.effects.length) {
+    const why = o.why.map((r) => t("reasons")[r]).filter(Boolean)[0];
+    parts.push(`<div class="ol-row"><span class="ol-label">${t("outlookLabel")}</span>${arrowChips(o)}</div>`);
+    if (why) parts.push(`<div class="ol-why"><b>${t("why")}</b> ${esc(why)}</div>`);
+  }
+  if (o.moved) parts.push(`<div class="ol-moved"><b>${t("movedTag")}</b> — ${esc(t("movedText"))}</div>`);
+  return parts.length ? `<div class="outlook">${parts.join("")}</div>` : "";
+}
+
 function card(i) {
   const also = i.others.length
     ? `<div class="also">${t("also")} ${i.others.map((o) => `<a href="${esc(o.link)}" target="_blank" rel="noopener">${esc(o.source)}</a>`).join(", ")}</div>`
@@ -240,6 +339,7 @@ function card(i) {
       </div>
       <h3><a href="${esc(i.link)}" target="_blank" rel="noopener">${esc(i.title)}</a></h3>
       ${i.summary && i.summary !== i.title ? `<p class="sum">${esc(i.summary)}</p>` : ""}
+      ${outlookBlock(i)}
       ${tags ? `<div class="tags">${tags}</div>` : ""}
       ${also}
     </div>
@@ -254,7 +354,7 @@ function renderTop() {
     .slice(0, 6);
   $("#top").innerHTML = top
     .map((i) => `<li><a href="${esc(i.link)}" target="_blank" rel="noopener">${esc(i.title)}</a>
-      <div class="meta"><span class="badge ${i.impact}">${t(i.impact)}</span> ${esc(i.source)} · ${rel(i.published)}</div></li>`)
+      <div class="meta"><span class="badge ${i.impact}">${t(i.impact)}</span> ${arrowChips(i.outlook)} ${esc(i.source)} · ${rel(i.published)}</div></li>`)
     .join("");
 }
 

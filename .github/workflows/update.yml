@@ -25,6 +25,8 @@ jobs:
       - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
+      - name: Test impact rules
+        run: python scripts/test_outlook.py
       - name: Fetch news and calendar
         env:
           SITE_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}

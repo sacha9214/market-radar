@@ -19,6 +19,8 @@ from datetime import datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
 from pathlib import Path
 
+from outlook import outlook
+
 OUT = Path(__file__).resolve().parent.parent / "site" / "data"
 UA = "Mozilla/5.0 (compatible; market-radar/1.0; +https://github.com/)"
 MAX_AGE_H = 48
@@ -120,7 +122,7 @@ ASSETS = {
     "AMZN": r"amazon|\bamzn\b",
     "GOOGL": r"alphabet|google|\bgoogl\b",
     "META": r"\bmeta\b|facebook",
-    "S&P 500": r"s&p 500|\bs&p\b|\bspx\b|\bspy\b",
+    "S&P 500": r"s&p 500|\bs&p\b|\bspx\b",
     "NASDAQ": r"nasdaq|\bqqq\b",
     "DOW": r"dow jones|\bthe dow\b",
     "GOLD": r"\bgold\b",
@@ -298,6 +300,7 @@ def build_news(now: datetime) -> dict:
     out = []
     for g in cluster(items):
         s, _ = score(g)
+        cls = classify(g)
         n_sources = 1 + len(g["others"])
         s += min(n_sources - 1, 3) * 2  # confirmed by several outlets
         level = "high" if s >= 6 else "medium" if s >= 3 else "low"
@@ -312,7 +315,8 @@ def build_news(now: datetime) -> dict:
                 "impact": level,
                 "sources": n_sources,
                 "others": [{"source": o["source"], "link": o["link"]} for o in g["others"]],
-                **classify(g),
+                **cls,
+                "outlook": outlook(g["title"], cls["assets"], cls["markets"]),
             }
         )
     out.sort(key=lambda x: x["published"], reverse=True)
