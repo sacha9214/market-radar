@@ -22,6 +22,7 @@ jobs:
     timeout-minutes: 8
     env:
       HAS_KEY: ${{ secrets.ANTHROPIC_API_KEY != '' }}
+      HAS_SUB: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN != '' }}
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v7
@@ -30,11 +31,15 @@ jobs:
       - name: Install Anthropic SDK
         if: ${{ env.HAS_KEY == 'true' }}
         run: pip install --quiet anthropic
+      - name: Install Claude Code (subscription mode)
+        if: ${{ env.HAS_SUB == 'true' && env.HAS_KEY != 'true' }}
+        run: npm install --global --silent @anthropic-ai/claude-code
       - name: Test impact rules
         run: python scripts/test_outlook.py
       - name: Fetch news and calendar
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           AI_MODEL: ${{ vars.AI_MODEL || 'claude-opus-5-5' }}
           AI_MIN_IMPACT: ${{ vars.AI_MIN_IMPACT || 'medium' }}
           SITE_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}

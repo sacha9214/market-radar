@@ -1,6 +1,10 @@
 """Claude-written market impact for each headline, replacing the keyword rules when enabled.
 
-Enabled only when ANTHROPIC_API_KEY is set. Each story is analysed once: results from the
+Two ways to run it:
+- ANTHROPIC_API_KEY set: Anthropic API through the Python SDK (billed per token).
+- CLAUDE_CODE_OAUTH_TOKEN set (from `claude setup-token`): the Claude Code CLI on the owner's
+  Claude subscription, no API billing.
+With neither, nothing runs. Each story is analysed once: results from the
 previous run (read back from the live site) are reused by link, so a run only pays for the
 stories that are new since the last one. Any failure leaves the rule-based outlook in place.
 """
@@ -8,6 +12,8 @@ from __future__ import annotations
 
 import json
 import os
+import shutil
+import subprocess
 import sys
 
 MODEL = os.environ.get("AI_MODEL", "claude-opus-5-5")
@@ -105,7 +111,40 @@ def clean(res: dict) -> dict:
     }
 
 
+def via_cli(batch: list[dict]) -> dict | None:
+    """One batch through `claude -p` on the subscription token, with schema-constrained output."""
+    cmd = ["claude", "-p", "--model", MODEL, "--effort", EFFORT, "--output-format", "json",
+           "--json-schema", json.dumps(SCHEMA), "--tools", "", "--no-session-persistence"]
+    env = {k: v for k, v in os.environ.items() if k != "ANTHROPIC_API_KEY"}  # an API key would take precedence
+    try:
+        run = subprocess.run(cmd, input=SYSTEM + "\n\n" + user_message(batch), capture_output=True, text=True,
+                             timeout=300, env=env)
+    except subprocess.TimeoutExpired:
+        print("  ai: claude CLI timed out, keeping rules for this batch", file=sys.stderr)
+        return None
+    if run.returncode != 0:
+        print(f"  ai: claude CLI exit {run.returncode}: {(run.stderr or run.stdout)[:300]}", file=sys.stderr)
+        return None
+    try:
+        envelope = json.loads(run.stdout)
+    except json.JSONDecodeError:
+        return None
+    data = envelope.get("structured_output")  # absent when the run ended without valid output
+    if not isinstance(data, dict):
+        print("  ai: no structured output from claude CLI, keeping rules for this batch", file=sys.stderr)
+        return None
+    print(f"  ai (subscription): {len(batch)} stories")
+    return data
+
+
 def analyse_batch(client, batch: list[dict]) -> dict[int, dict]:
+    data = via_cli(batch) if client is None else via_api(client, batch)
+    if not data:
+        return {}
+    return {r["id"]: clean(r) for r in data.get("items", []) if isinstance(r.get("id"), int) and 0 <= r["id"] < len(batch)}
+
+
+def via_api(client, batch: list[dict]) -> dict | None:
     import anthropic
 
     try:
@@ -121,22 +160,22 @@ def analyse_batch(client, batch: list[dict]) -> dict[int, dict]:
         )
     except (anthropic.RateLimitError, anthropic.APIConnectionError, anthropic.InternalServerError) as e:
         print(f"  ai: transient error, keeping rules for this batch: {e}", file=sys.stderr)
-        return {}
+        return None
     except anthropic.APIStatusError as e:
         print(f"  ai: API error {e.status_code}, keeping rules: {e.message}", file=sys.stderr)
-        return {}
+        return None
 
     if resp.stop_reason != "end_turn":
         print(f"  ai: stop_reason={resp.stop_reason}, keeping rules for this batch", file=sys.stderr)
-        return {}
+        return None
     text = next((b.text for b in resp.content if b.type == "text"), "")
     try:
         data = json.loads(text)
     except json.JSONDecodeError:
-        return {}
+        return None
     u = resp.usage
-    print(f"  ai: {len(batch)} stories, {u.input_tokens} in / {u.output_tokens} out tokens")
-    return {r["id"]: clean(r) for r in data.get("items", []) if isinstance(r.get("id"), int) and 0 <= r["id"] < len(batch)}
+    print(f"  ai (API): {len(batch)} stories, {u.input_tokens} in / {u.output_tokens} out tokens")
+    return data
 
 
 def enrich(items: list[dict], previous: dict[str, dict]) -> int:
@@ -147,12 +186,15 @@ def enrich(items: list[dict], previous: dict[str, dict]) -> int:
         if prev and prev.get("src") == "ai":
             it["outlook"] = prev
 
-    if not os.environ.get("ANTHROPIC_API_KEY"):
-        return 0
-    try:
-        import anthropic
-    except ImportError:
-        print("  ai: anthropic package missing, keeping rules", file=sys.stderr)
+    client = None
+    if os.environ.get("ANTHROPIC_API_KEY"):
+        try:
+            import anthropic
+        except ImportError:
+            print("  ai: anthropic package missing, keeping rules", file=sys.stderr)
+            return 0
+        client = anthropic.Anthropic()
+    elif not (os.environ.get("CLAUDE_CODE_OAUTH_TOKEN") and shutil.which("claude")):
         return 0
 
     todo = [it for it in items
@@ -160,7 +202,6 @@ def enrich(items: list[dict], previous: dict[str, dict]) -> int:
     todo = todo[:MAX_NEW_PER_RUN]  # newest first: a backlog drains over a few runs instead of one big bill
     if not todo:
         return 0
-    client = anthropic.Anthropic()
     done = 0
     for i in range(0, len(todo), BATCH):
         batch = todo[i:i + BATCH]
