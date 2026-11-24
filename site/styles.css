@@ -137,6 +137,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .dir.up { color: var(--live); background: rgba(43, 213, 118, 0.12); }
 .dir.down { color: var(--high); background: var(--high-bg); }
 .top-list .dir { font-size: 10.5px; padding: 1px 5px; }
+.ai-tag { font: 600 10.5px var(--mono); color: #c9b6ff; background: rgba(150, 110, 255, 0.16); border-radius: 5px; padding: 2px 6px; cursor: help; }
+.ol-meta { color: var(--faint); font-size: 12px; margin-left: 4px; }
 .ol-why { color: var(--muted); margin-top: 6px; line-height: 1.4; }
 .ol-why b { color: var(--text); font-weight: 600; }
 .ol-row + .ol-moved, .ol-why + .ol-moved { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line); }

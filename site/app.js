@@ -34,6 +34,11 @@ const I18N = {
       "Les news arrivent avec 10 à 30 min de retard (flux RSS publics, actualisés par GitHub Actions). Les pros les ont en millisecondes : ce site sert à ne pas être pris par surprise, pas à battre le marché. Le score d'impact est calculé par mots-clés et peut se tromper. Rien ici n'est un conseil en investissement.",
     feeds: (ok, n) => `${ok}/${n} sources en ligne`,
     outlookLabel: "Impact probable :",
+    aiTag: "IA",
+    noEffect: "pas d'effet clair attendu",
+    aiTitle: "Analyse écrite par Claude (IA) — peut se tromper",
+    pricedIn: { likely: "Probablement déjà dans le prix", maybe: "Peut-être en partie dans le prix", unlikely: "Surprise : pas encore dans le prix" },
+    conf: { low: "confiance faible", medium: "confiance moyenne", high: "confiance forte" },
     why: "Pourquoi :",
     movedTag: "⚠ Déjà réagi",
     movedText: "Ce titre décrit un mouvement de prix qui a déjà eu lieu : acheter maintenant, c'est acheter après les autres.",
@@ -104,6 +109,11 @@ const I18N = {
       "News arrives 10–30 min late (public RSS feeds, refreshed by GitHub Actions). Pros get it in milliseconds: this site keeps you from being caught off guard, it won't beat the market. The impact score is keyword-based and can be wrong. Nothing here is investment advice.",
     feeds: (ok, n) => `${ok}/${n} sources online`,
     outlookLabel: "Likely impact:",
+    aiTag: "AI",
+    noEffect: "no clear effect expected",
+    aiTitle: "Analysis written by Claude (AI) — can be wrong",
+    pricedIn: { likely: "Probably already priced in", maybe: "Maybe partly priced in", unlikely: "Surprise: not priced in yet" },
+    conf: { low: "low confidence", medium: "medium confidence", high: "high confidence" },
     why: "Why:",
     movedTag: "⚠ Already moved",
     movedText: "This headline reports a price move that already happened: buying now means buying after everyone else.",
@@ -311,9 +321,13 @@ function outlookBlock(i) {
   const o = i.outlook;
   if (!o) return "";
   const parts = [];
-  if (o.effects.length) {
-    const why = o.why.map((r) => t("reasons")[r]).filter(Boolean)[0];
-    parts.push(`<div class="ol-row"><span class="ol-label">${t("outlookLabel")}</span>${arrowChips(o)}</div>`);
+  const ai = o.src === "ai";
+  const why = ai ? (state.lang === "fr" ? o.why_fr : o.why_en) : (o.why || []).map((r) => t("reasons")[r]).filter(Boolean)[0];
+  if (o.effects.length || (ai && why)) {
+    const aiTag = ai ? `<span class="ai-tag" title="${esc(t("aiTitle"))}">${t("aiTag")}</span>` : "";
+    const extra = ai && o.effects.length
+      ? `<span class="ol-meta">${esc(t("pricedIn")[o.priced_in] || "")}${o.conf ? " · " + esc(t("conf")[o.conf] || "") : ""}</span>` : "";
+    parts.push(`<div class="ol-row">${aiTag}<span class="ol-label">${t("outlookLabel")}</span>${arrowChips(o) || `<span class="ol-meta">${t("noEffect")}</span>`}${extra}</div>`);
     if (why) parts.push(`<div class="ol-why"><b>${t("why")}</b> ${esc(why)}</div>`);
   }
   if (o.moved) parts.push(`<div class="ol-moved"><b>${t("movedTag")}</b> — ${esc(t("movedText"))}</div>`);

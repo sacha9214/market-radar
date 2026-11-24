@@ -19,6 +19,7 @@ from datetime import datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
 from pathlib import Path
 
+from ai_outlook import enrich
 from outlook import outlook
 
 OUT = Path(__file__).resolve().parent.parent / "site" / "data"
@@ -320,21 +321,32 @@ def build_news(now: datetime) -> dict:
             }
         )
     out.sort(key=lambda x: x["published"], reverse=True)
+    out = out[:MAX_ITEMS]
+    prev = previous("news.json") or {}
+    prev_outlooks = {i["link"]: i["outlook"] for i in prev.get("items", []) if i.get("outlook")}
+    analysed = enrich(out, prev_outlooks)
+    if analysed:
+        print(f"Claude analysed {analysed} new stories")
     return {"updated": now.isoformat(), "count": len(out[:MAX_ITEMS]), "feeds": status, "items": out[:MAX_ITEMS]}
 
 
-def previous_calendar() -> dict | None:
-    """The calendar feed is rate-limited; on failure reuse what the live site already serves."""
+def previous(name: str) -> dict | None:
+    """Last published data file: from the live site in CI, else the local copy."""
     base = os.environ.get("SITE_URL", "").rstrip("/")
-    local_file = OUT / "calendar.json"
+    local_file = OUT / name
     try:
         if base:
-            return json.loads(fetch(f"{base}/data/calendar.json"))
+            return json.loads(fetch(f"{base}/data/{name}?t={int(time.time())}"))
         if local_file.exists():
             return json.loads(local_file.read_text())
     except Exception:
         pass
     return None
+
+
+def previous_calendar() -> dict | None:
+    """The calendar feed is rate-limited; on failure reuse what the live site already serves."""
+    return previous("calendar.json")
 
 
 def build_calendar(now: datetime) -> dict:

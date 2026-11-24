@@ -19,16 +19,24 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 8
+    env:
+      HAS_KEY: ${{ secrets.ANTHROPIC_API_KEY != '' }}
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
+      - name: Install Anthropic SDK
+        if: ${{ env.HAS_KEY == 'true' }}
+        run: pip install --quiet anthropic
       - name: Test impact rules
         run: python scripts/test_outlook.py
       - name: Fetch news and calendar
         env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          AI_MODEL: ${{ vars.AI_MODEL || 'claude-opus-5-5' }}
+          AI_MIN_IMPACT: ${{ vars.AI_MIN_IMPACT || 'medium' }}
           SITE_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
         run: python scripts/fetch_news.py
       - name: Cache-bust assets
