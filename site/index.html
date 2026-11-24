@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Market Radar</title>
+  <meta name="description" content="Les news qui font bouger la crypto et la bourse, triées par impact, avec le calendrier économique.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='none' stroke='%232bd576' stroke-width='2.5'/><circle cx='16' cy='16' r='7' fill='none' stroke='%232bd576' stroke-width='2'/><circle cx='16' cy='16' r='2.5' fill='%23ff4d5e'/></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <span class="radar" aria-hidden="true"></span>
+      <h1>Market Radar</h1>
+      <span class="status" id="status"><span class="dot"></span><span id="status-text">…</span></span>
+    </div>
+    <div class="top-actions">
+      <button class="btn" id="notify-btn" type="button"></button>
+      <button class="btn ghost" id="lang-btn" type="button">EN</button>
+    </div>
+  </header>
+
+  <div class="ticker">
+    <div class="tradingview-widget-container">
+      <div class="tradingview-widget-container__widget"></div>
+    </div>
+  </div>
+
+  <main class="layout">
+    <aside class="side">
+      <section class="panel p-cal">
+        <h2 data-i18n="calTitle"></h2>
+        <p class="hint" data-i18n="calHint"></p>
+        <ol class="cal" id="calendar"></ol>
+      </section>
+      <section class="panel p-top">
+        <h2 data-i18n="topTitle"></h2>
+        <ol class="top-list" id="top"></ol>
+      </section>
+    </aside>
+
+    <section class="feed">
+      <div class="filters">
+        <div class="seg" role="group" id="f-market">
+          <button data-v="all" data-i18n="all"></button>
+          <button data-v="crypto">Crypto</button>
+          <button data-v="stocks" data-i18n="stocks"></button>
+        </div>
+        <div class="seg" role="group" id="f-impact">
+          <button data-v="high" data-i18n="impHigh"></button>
+          <button data-v="medium" data-i18n="impMed"></button>
+          <button data-v="low" data-i18n="all"></button>
+        </div>
+        <input type="search" id="f-search" autocomplete="off">
+      </div>
+      <div class="chips" id="f-cats"></div>
+      <div class="new-banner" id="new-banner" hidden></div>
+      <ol class="news" id="news"></ol>
+      <p class="empty" id="empty" hidden></p>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <p data-i18n="disclaimer"></p>
+    <p class="muted" id="feeds-status"></p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
